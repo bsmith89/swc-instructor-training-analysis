@@ -1,6 +1,8 @@
 GITHUB_PAGES_BRANCH = gh-pages
 SITE_DIR = _site
 
+all: instructor_stats_survival.html
+
 teaching-stats-2016-05.csv:
 	curl -O http://software-carpentry.org/files/2016/05/teaching-stats-2016-05.csv
 
@@ -15,6 +17,6 @@ ${SITE_DIR}/index.html: instructor_stats_survival.html
 	@mkdir -p ${@D}
 	cp $^ $@
 
-.ghp-import: ${SITE_DIR}/index.html
+.gh-pages: ${SITE_DIR}/index.html
 	ghp-import -m "Generate page" -b ${GITHUB_PAGES_BRANCH} ${SITE_DIR}
 	git push origin ${GITHUB_PAGES_BRANCH}
