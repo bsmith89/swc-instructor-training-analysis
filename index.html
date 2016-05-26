@@ -11752,6 +11752,7 @@ div#notebook {
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>See auxiliary code at <a href="https://github.com/bsmith89/swc-instructor-training-analysis">https://github.com/bsmith89/swc-instructor-training-analysis</a> and pre-computed results at <a href="https://bsmith89.github.io/swc-instructor-training-analysis/">https://bsmith89.github.io/swc-instructor-training-analysis/</a>.</p>
+<p>Code is licensed under <a href="https://opensource.org/licenses/MIT">MIT</a> and this page as <a href="https://creativecommons.org/licenses/by/2.0/">CC-BY</a>.</p>
 
 </div>
 </div>
@@ -11770,19 +11771,17 @@ div#notebook {
 <span class="o">%</span><span class="k">matplotlib</span> inline
 
 <span class="k">def</span> <span class="nf">get_person_details</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;Taught&#39;</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;Taught&#39;</span><span class="p">)</span>
     <span class="n">certified</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Certified</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">certified</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
     <span class="n">taught</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Taught</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
     
-    <span class="k">try</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">taught</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
         <span class="n">taught_first</span> <span class="o">=</span> <span class="n">taught</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-        <span class="n">taught_first</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">taught_second</span> <span class="o">=</span> <span class="n">taught</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
         <span class="n">taught_second</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">taught_first</span> <span class="o">=</span> <span class="n">taught</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">taught_second</span> <span class="o">=</span> <span class="n">taught</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     
     <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">({</span><span class="s1">&#39;certified&#39;</span><span class="p">:</span> <span class="n">certified</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                       <span class="s1">&#39;taught_first&#39;</span><span class="p">:</span> <span class="n">taught_first</span><span class="p">,</span>
@@ -11871,7 +11870,7 @@ div#notebook {
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.text.Text at 0x10504dc18&gt;</pre>
+<pre>&lt;matplotlib.text.Text at 0x10c965cf8&gt;</pre>
 </div>
 
 </div>
@@ -12035,17 +12034,17 @@ rkJggg==
 
 <span class="c1"># Right censor for individuals who have not yet taught by the date</span>
 <span class="c1"># of this data collection.</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">PHReg</span><span class="p">(</span><span class="n">ydm</span><span class="p">,</span> <span class="n">xdm</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">_data</span><span class="o">.</span><span class="n">has_taught</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">fit1</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">PHReg</span><span class="p">(</span><span class="n">ydm</span><span class="p">,</span> <span class="n">xdm</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">_data</span><span class="o">.</span><span class="n">has_taught</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
 
 <span class="c1"># I believe that, given the sum-to-zero coding in the model,</span>
 <span class="c1"># the &quot;baseline&quot; cumulative hazard function should represent</span>
 <span class="c1"># the mean of annual means.</span>
-<span class="n">sf</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">baseline_cumulative_hazard</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">sf</span> <span class="o">=</span> <span class="n">fit1</span><span class="o">.</span><span class="n">baseline_cumulative_hazard</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sf</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># No certification year was significantly different from the overall mean.</span>
-<span class="n">fit</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="n">fit1</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -12258,7 +12257,7 @@ hV5EJOVU6EVEUu7/AU/aapNZ6JvWAAAAAElFTkSuQmCC
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;matplotlib.text.Text at 0x10d613ef0&gt;</pre>
+<pre>&lt;matplotlib.text.Text at 0x114ebed68&gt;</pre>
 </div>
 
 </div>
@@ -12409,11 +12408,11 @@ AElFTkSuQmCC
 <span class="n">xdm</span> <span class="o">=</span> <span class="n">xdm</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s1">&#39;Intercept&#39;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;columns&#39;</span><span class="p">)</span>  <span class="c1"># Remove the intercept term</span>
 
 <span class="c1"># Right censor for individuals who have not yet taught a second time.</span>
-<span class="n">fit</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">PHReg</span><span class="p">(</span><span class="n">ydm</span><span class="p">,</span> <span class="n">xdm</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">_data</span><span class="o">.</span><span class="n">has_taught_multiple</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
+<span class="n">fit2</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">PHReg</span><span class="p">(</span><span class="n">ydm</span><span class="p">,</span> <span class="n">xdm</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">_data</span><span class="o">.</span><span class="n">has_taught_multiple</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">()</span>
 
-<span class="c1"># The probability of having not taught a second time for someone who taught</span>
-<span class="c1"># at day 0 of being certified.</span>
-<span class="n">sf</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">baseline_cumulative_hazard</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c1"># The baseline hazard is the probability of having not taught a second</span>
+<span class="c1"># time by a given day for someone who taught at day 0 of being certified.</span>
+<span class="n">sf</span> <span class="o">=</span> <span class="n">fit2</span><span class="o">.</span><span class="n">baseline_cumulative_hazard</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">sf</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sf</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
@@ -12422,8 +12421,8 @@ AElFTkSuQmCC
 <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;The per-day chance of teaching again goes down &quot;</span>
        <span class="s2">&quot;by </span><span class="si">{:.2}% f</span><span class="s2">or every day &quot;</span>
        <span class="s2">&quot;between certification and teaching the first time.&quot;</span><span class="p">)</span>
-           <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">-</span><span class="n">fit</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span>
-<span class="n">fit</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+           <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">-</span><span class="n">fit2</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="p">))</span>
+<span class="n">fit2</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 </pre></div>
 
 </div>
@@ -12628,7 +12627,19 @@ nIJeRCTmFPQiIjGnoBcRiTkFvYhIzCnoRURiTkEvIhJz/w+Q3h3tckSXQwAAAABJRU5ErkJggg==
 
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre><span class="ansi-yellow-fg">commit ba4277384fbda4d3ee61f37304e28489ca007312</span>
+<pre><span class="ansi-yellow-fg">commit d9dfd0494903d4c7e35fb8801560300ce31e203d</span>
+Author: Byron Smith &lt;me@byronjsmith.com&gt;
+Date:   Thu May 26 11:56:31 2016 -0400
+
+    Better variable naming, python best-practices.
+
+<span class="ansi-yellow-fg">commit a042cf2ca4db06bb7ed6edf73208b978e03240e0</span>
+Author: Byron Smith &lt;me@byronjsmith.com&gt;
+Date:   Thu May 26 11:54:49 2016 -0400
+
+    Add details about reuse of code/text.
+
+<span class="ansi-yellow-fg">commit ba4277384fbda4d3ee61f37304e28489ca007312</span>
 Author: Byron Smith &lt;me@byronjsmith.com&gt;
 Date:   Wed May 25 09:54:19 2016 -0400
 
